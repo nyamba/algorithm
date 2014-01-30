@@ -1,41 +1,53 @@
-def sqr_list(n):
-    '''
-    >>> sqr_list(25)
-    [4, 9, 16, 25]
-    >>> sqr_list(20)
-    [4, 9, 16]
-    '''
-    ll = []
-    for i in xrange(2, int(n**0.5)+1):
-        a = i**2
-        if a <= n:
-            ll.append(a)
+def multiple(m, n):
+    a = n[0][0]*m[0] + n[0][1]*m[1] + n[0][2]*m[2]
+    b = n[1][0]*m[0] + n[1][1]*m[1] + n[1][2]*m[2]
+    c = n[2][0]*m[0] + n[2][1]*m[1] + n[2][2]*m[2]
 
-    return ll
+    return a, b, c
 
 
-def is_sqr(n):
-    '''
-    >>> is_sqr(4)
-    True
-    >>> is_sqr(5)
-    False
-    '''
+def gen_prime(parent):
+    A = ([1, -2, 2],
+         [2, -1, 2],
+         [2, -2, 3])
+    B = ([1, 2, 2],
+         [2, 1, 2],
+         [2, 2, 3])
+    C = ([-1, 2, 2],
+         [-2, 1, 2],
+         [-2, 2, 3])
 
-    return int(n**0.5)**2 == n
+    c1 = multiple(parent, A)
+    c2 = multiple(parent, B)
+    c3 = multiple(parent, C)
 
-
-def calc(n):
-    '''
-    >>> calc(15)
-    3 4 5
-    5 12 13
-    6 8 10
-    9 12 15
-    '''
-    for a in xrange(3, n+1):
-        pass
+    return c1, c2, c3
 
 
 if __name__ == '__main__':
-    calc(*[int(i) for i in raw_input().split()])
+    n = input()
+    parents = [(3, 4, 5)]
+    all_ptriples = []
+
+    # generating primes
+    index = 0
+    while index < len(parents):
+        for c in gen_prime(parents[index]):
+            cc = sorted(c)
+            if cc[2] <= n:
+                parents.append(cc)
+        index += 1
+
+    # scaling the primes
+    append = all_ptriples.append
+    for i in parents:
+        scale = 1
+        while i[2]*scale <= n:
+            append((scale*i[0], scale*i[1], scale*i[2]))
+            scale += 1
+
+    # sorting
+    all_ptriples.sort()
+
+    for a, b, c in all_ptriples:
+        print a, b, c
